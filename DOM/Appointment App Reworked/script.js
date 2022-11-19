@@ -1,70 +1,72 @@
-let nameInput = document.querySelector('#username');
-let emailInput = document.querySelector('#email');
-let myForm = document.querySelector('#myForm');
-
-//Event Listener:
-myForm.addEventListener('submit', onSubmit);
-function onSubmit(e) {
-  e.preventDefault();
-  userName = nameInput.value;
-  userEmail = emailInput.value;
-  let obj = {
-    name: userName,
-    email: userEmail,
+function saveToLocalStorage(event) {
+  event.preventDefault();
+  const name = event.target.username.value;
+  const email = event.target.emailId.value;
+  const phonenumber = event.target.phonenumber.value;
+  // localStorage.setItem('name', name);
+  // localStorage.setItem('email', email);
+  // localStorage.setItem('phonenumber', phonenumber)
+  const obj = {
+    name,
+    email,
+    phonenumber,
   };
   localStorage.setItem(obj.email, JSON.stringify(obj));
-  onScreen(obj);
+  showNewUserOnScreen(obj);
 }
 
-// for current input detail:
-//if the user input already exists
-function onScreen(obj) {
-  //creating list element and appending its content together
-  let li = document.createElement('li');
-  let text = document.createTextNode(`${obj.name} ${obj.email}`);
-  li.appendChild(text);
-  //placing the list element on the dom
-  let parent = document.querySelector('#div');
-  let child = document.querySelector('#list');
-  parent.insertBefore(li, child);
-  editButton();
-  deleteButton();
-}
+window.addEventListener('DOMContentLoaded', () => {
+  const localStorageObj = localStorage;
+  const localstoragekeys = Object.keys(localStorageObj);
 
-//from local storage details:
-Object.keys(localStorage).forEach((key) => {
-  stringifiedDetailsOfPeople = localStorage.getItem(key);
-  detailsOfPeople = JSON.parse(stringifiedDetailsOfPeople);
-  //creating list element and appending its content together
-  let li = document.createElement('li');
-  let text = document.createTextNode(
-    `${detailsOfPeople.name} ${detailsOfPeople.email}`
-  );
-  li.appendChild(text);
-  //placing the list element on the dom
-  let parent = document.querySelector('#div');
-  let child = document.querySelector('#list');
-  parent.insertBefore(li, child);
-  editButton();
-  deleteButton();
+  for (var i = 0; i < localstoragekeys.length; i++) {
+    const key = localstoragekeys[i];
+    const userDetailsString = localStorageObj[key];
+    const userDetailsObj = JSON.parse(userDetailsString);
+    showNewUserOnScreen(userDetailsObj);
+  }
 });
-function editButton() {
-  //creating edit button
-  let editBtn = document.createElement('button');
-  let editText = document.createTextNode(`Edit`);
-  editBtn.appendChild(editText);
-  //placing the list element on the dom
-  let editParent = document.querySelector('#div');
-  let editChild = document.querySelector('#list');
-  editParent.insertBefore(editBtn, editChild);
+
+function showNewUserOnScreen(user) {
+  document.getElementById('email').value = '';
+  document.getElementById('username').value = '';
+  document.getElementById('phonenumber').value = '';
+  // console.log(localStorage.getItem(user.emailId))
+  if (localStorage.getItem(user.email) !== null) {
+    removeUserFromScreen(user.email);
+  }
+
+  const parentNode = document.getElementById('listOfUsers');
+  const childHTML = `<li id=${user.email}> ${user.name} - ${user.email}
+                          <button onclick=deleteUser('${user.email}')> Delete User </button>
+                          <button onclick=editUserDetails('${user.email}','${user.name}','${user.phonenumber}')>Edit User </button>
+                       </li>`;
+
+  parentNode.innerHTML = parentNode.innerHTML + childHTML;
 }
-function deleteButton() {
-  //creating delete button
-  let btn = document.createElement('button');
-  let btnText = document.createTextNode(`Delete`);
-  btn.appendChild(btnText);
-  //placing the list element on the dom
-  let btnParent = document.querySelector('#div');
-  let btnChild = document.querySelector('#list');
-  btnParent.insertBefore(btn, btnChild);
+
+//Edit User
+
+function editUserDetails(emailId, name, phonenumber) {
+  document.getElementById('email').value = emailId;
+  document.getElementById('username').value = name;
+  document.getElementById('phonenumber').value = phonenumber;
+
+  deleteUser(emailId);
+}
+
+// deleteUser('abc@gmail.com')
+
+function deleteUser(emailId) {
+  console.log(emailId);
+  localStorage.removeItem(emailId);
+  removeUserFromScreen(emailId);
+}
+
+function removeUserFromScreen(emailId) {
+  const parentNode = document.getElementById('listOfUsers');
+  const childNodeToBeDeleted = document.getElementById(emailId);
+  if (childNodeToBeDeleted) {
+    parentNode.removeChild(childNodeToBeDeleted);
+  }
 }
