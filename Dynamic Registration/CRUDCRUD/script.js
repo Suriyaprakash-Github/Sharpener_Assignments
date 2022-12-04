@@ -46,7 +46,7 @@ function saveToLocalStorage(event) {
     const parentNode = document.getElementById('listOfUsers');
     const childHTML = `<li id=${user._id}> ${user.name} - ${user.email}
                             <button onclick=deleteUser('${user._id}')> Delete User </button>
-                            <button onclick=editUserDetails('${user._id}','${user.name}','${user.phonenumber}')>Edit User </button>
+                            <button onclick=editUserDetails('${user._id}','${user.email}','${user.name}','${user.phonenumber}')>Edit User </button>
                          </li>`;
   
     parentNode.innerHTML = parentNode.innerHTML + childHTML;
@@ -54,12 +54,11 @@ function saveToLocalStorage(event) {
   
   //Edit User
   
-  function editUserDetails(emailId, name, phonenumber) {
+  function editUserDetails(id,emailId, name, phonenumber) {
     document.getElementById('email').value = emailId;
     document.getElementById('username').value = name;
     document.getElementById('phonenumber').value = phonenumber;
-  
-    deleteUser(emailId);
+    deleteUser(id);
   }
   
   // deleteUser('abc@gmail.com')
