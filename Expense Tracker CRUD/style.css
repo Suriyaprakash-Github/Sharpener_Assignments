@@ -1,0 +1,12 @@
+#formDiv{
+    background-color: white;
+    border-radius: 10px;
+}
+body{
+    background-color: #ced4da;
+}
+
+.container{
+    width: 70%;
+    margin-top: 2rem;
+}
